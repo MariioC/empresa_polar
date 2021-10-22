@@ -31,18 +31,7 @@ CORS(app)
 
 @app.route('/')
 def root():
-    print('ENTRA')
     return app.send_static_file('index.html')
-
-# @app.route('/')
-# def send_file():
-#     print(app.root_path+'/dist/')
-#     return send_from_directory(app.root_path+'/dist/', 'Inicio')
-    # return jsonify({ 'mensaje' : 'Hola'})
-
-# @app.route('/')
-# def index():
-#     return '<h1 style="text-align: center;">Bienvenido a la API de EMPRESA POLAR</h1>';
 
 @app.errorhandler(404)
 def NotFound(error):

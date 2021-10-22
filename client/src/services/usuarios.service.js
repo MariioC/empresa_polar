@@ -43,6 +43,13 @@ export const actualizarPassword = async ( id_usuario, data ) => {
     return await resp.json();
 }
 
+export const restablecerPassword = async ( usuario ) => {
+    const resp = await fetch( `${API_URI}usuarios/password/${usuario}`, {
+        headers: setHeaders()
+    });
+    return await resp.json();
+}
+
 export const obtenerUsuarios = async ( ) => {
     const resp = await fetch( `${API_URI}usuarios/`, {
         headers: setHeaders(),

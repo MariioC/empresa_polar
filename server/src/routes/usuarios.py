@@ -12,6 +12,13 @@ from jwt_helpers import verificarToken, identificarUsuario, crearToken, verifica
 #Yagmail
 import yagmail
 
+# PARA GENERAR LAS CONTRASEÑAS NUEVAS DE FORMA ALEATORIA
+import string    
+import random
+
+# Configuración del correo de la empresa y contraseña del correo
+from config import CORREO_EMPRESA, PASSWORD_CORREO
+
 usuariosRoutes = Blueprint('usuariosRoutes', __name__)
 
 @usuariosRoutes.route('/login', methods=['POST'])
@@ -339,6 +346,52 @@ def actualizarPasswordUsuario(id_usuario = None):
             'error': 'Ocurrió un error inesperado al actualizar la contraseña del usuario'
         })
 
+@usuariosRoutes.route('/password/<usuario>', methods=['GET'])
+def restablecerPasswordUsuario(usuario = None):
+    try:
+
+        # SI SE TIENE EL ID_USUARIO POR PARAMETRO QUIERE DECIR QUE UN ADMIN O SUPERADMIN QUIERE ACTUALIZAR UN PERFIL DE USUARIO
+        if usuario is not None:
+            
+            info_usuario = usuariosController.getUsuario(str(usuario))
+            if info_usuario is not None:
+                # GENERO LA NUEVA CONTRASEÑA
+                password = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 10))
+
+                new_password = generate_password_hash(str(password), 15).decode('utf-8')
+                if usuariosController.actualizarPassword(new_password, info_usuario['info_personal']['id_usuario']) is True:
+                    
+                    asunto = 'Empresa polar | Restablecimiento de contraseña'
+                    correo = info_usuario['info_personal']['correo']
+                    mensaje = 'Se ha restablecido su contraseña de forma correcta. \n\nSu contraseña ha sido actualizada, se le recomienda cambiarla una vez inicie sesión.\n\n Contraseña nueva: <b>{0}</b>'.format(password)
+
+                    yag = yagmail.SMTP(user=CORREO_EMPRESA, password=PASSWORD_CORREO)
+                    
+                    yag.send(to=correo, subject=asunto, contents=mensaje)
+
+                    preview_correo = correo[0:4] + '........' + correo[correo.find('@')-3: correo.find('@')] + correo[correo.find('@'):];
+
+                    return jsonify({
+                        'mensaje': 'Hemos enviado un correo con la información necesaria al correo registrado en la empresa: {0}'.format(preview_correo)
+                    })
+                else:
+                    return jsonify({
+                        'error': 'No se ha podido restablecer la contraseña del usuario',
+                    })
+            else:
+                return jsonify({
+                    'error': 'Usuario no registrado en la empresa',
+                })
+        else:
+            return jsonify({
+                'error': 'Hay un error con el usuario que ha digitado',
+            })
+    except Exception as error:
+        print("Error en usuariosRoutes.restablecerPasswordUsuario: ", error)
+        return jsonify({
+            'error': 'Ocurrió un error inesperado al rerstablecer la contraseña del usuario'
+        })
+
 @usuariosRoutes.route('/<id_usuario>', methods=['DELETE'])
 @verificarToken
 def eliminarUsuario(id_usuario):
@@ -432,14 +485,14 @@ def enviarMensajeContacto():
 
         asunto = json_data['asunto']
         correo = json_data['correo']
-        mensaje = json_data['mensaje']
+        mensaje = 'Mensaje enviado por: <b>{0}</b>\n\n {1}'.format(correo, json_data['mensaje'])
 
-        yag = yagmail.SMTP(user='macb0797@gmail.com', password='macb1085338002')
+        yag = yagmail.SMTP(user=CORREO_EMPRESA, password=PASSWORD_CORREO)
 
-        yag.send(to=correo, subject=asunto, contents=mensaje)
+        yag.send(to=CORREO_EMPRESA, subject=asunto, contents=mensaje)
         
         return jsonify({
-            'mensaje': 'Mensaje enviado.\n Nos pondremos en contacto contigo lo más pronto posible',
+            'mensaje': 'Mensaje enviado.\n Nos pondremos en contacto lo más pronto posible',
         })
     except Exception as error:
         print("Error en usuariosRoutes.enviarMensajeContacto: ", error)

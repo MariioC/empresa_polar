@@ -28,6 +28,7 @@ export default {
     components: {
         ModalUsuario: () => import(/* webpackChunkName: "ModalUsuario" */ "./ModalUsuario"),
         ModalPassword: () => import(/* webpackChunkName: "ModalPassword" */ "./ModalPassword"),
+        ModalRecovery: () => import(/* webpackChunkName: "ModalPassword" */ "./ModalRecovery"),
         ModalDependencia: () => import(/* webpackChunkName: "ModalDependencia" */ "./ModalDependencia"),
         ModalRetroalimentacion: () => import(/* webpackChunkName: "ModalRetroalimentacion" */ "./ModalRetroalimentacion"),
     }

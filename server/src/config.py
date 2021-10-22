@@ -6,3 +6,6 @@ ROLES = {
     'A'  : 'Administrador',
     'E'  : 'Empleado'
 }
+
+CORREO_EMPRESA = 'su_correo'
+PASSWORD_CORREO = 'Su contraseña del correo'

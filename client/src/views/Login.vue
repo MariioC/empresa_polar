@@ -18,7 +18,7 @@
                     <button type="submit" class="btn btn-primary btn-lg col-md-6">Iniciar sesión</button>
                     <div class="fw-bold col-md-6 mt-2 text-muted small">
                         <p class="mb-0 text-center lh-1">¿Olvidó su contraseña?<br>
-                            <a href="#" class="fw-bolder text-info text-decoration-none">Clic aquí</a>
+                            <a href="#" class="fw-bolder text-info text-decoration-none" @click.prevent="ModalRecovery">Clic aquí</a>
                         </p>
                     </div>
                 </div>
@@ -54,6 +54,9 @@ export default {
         }
     },
     methods: {
+        ModalRecovery() {
+            this.$store.dispatch('showModal', { show_modal: 'ModalRecovery'});
+        },
         toggleTypePassword() {
             if(this.type_password == 'password') this.type_password = 'text';
             else this.type_password = 'password';
