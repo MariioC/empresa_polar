@@ -363,7 +363,7 @@ def restablecerPasswordUsuario(usuario = None):
                     
                     asunto = 'Empresa polar | Restablecimiento de contraseña'
                     correo = info_usuario['info_personal']['correo']
-                    mensaje = 'Se ha restablecido su contraseña de forma correcta. \n\nSu contraseña ha sido actualizada, se le recomienda cambiarla una vez inicie sesión.\n\n Contraseña nueva: <b>{0}</b>'.format(password)
+                    mensaje = 'Hola, {0}.\n\n Se ha restablecido su contraseña de forma correcta. \n\nSu contraseña ha sido actualizada, se le recomienda cambiarla una vez inicie sesión.\n\n Contraseña nueva: <b>{1}</b>'.format(info_usuario['info_personal']['nombres'], password)
 
                     yag = yagmail.SMTP(user=CORREO_EMPRESA, password=PASSWORD_CORREO)
                     
